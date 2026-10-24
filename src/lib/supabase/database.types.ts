@@ -5,7 +5,39 @@ export type Database = {
   
   "public": {
           Tables: {
-            "audit_logs": {
+            "assignments": {
+                  Row: {
+                    "created_at": string,"created_by": string | null,"id": string,"instructions": string,"lesson_id": string | null,"module_id": string | null,"rubric": NonNullable<Json>,"status": Database["public"]['Enums']["content_status"],"title": string,"type": Database["public"]['Enums']["assignment_type"],"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"created_by"?: string | null,"id"?: string,"instructions"?: string,"lesson_id"?: string | null,"module_id"?: string | null,"rubric"?: NonNullable<Json>,"status"?: Database["public"]['Enums']["content_status"],"title": string,"type": Database["public"]['Enums']["assignment_type"],"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"created_by"?: string | null,"id"?: string,"instructions"?: string,"lesson_id"?: string | null,"module_id"?: string | null,"rubric"?: NonNullable<Json>,"status"?: Database["public"]['Enums']["content_status"],"title"?: string,"type"?: Database["public"]['Enums']["assignment_type"],"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "assignments_created_by_fkey"
+      columns: ["created_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "assignments_lesson_id_fkey"
+      columns: ["lesson_id"]
+isOneToOne: false
+      referencedRelation: "lessons"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "assignments_module_id_fkey"
+      columns: ["module_id"]
+isOneToOne: false
+      referencedRelation: "modules"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"audit_logs": {
                   Row: {
                     "action": string,"actor_user_id": string | null,"created_at": string,"entity_id": string | null,"entity_type": string,"id": number,"metadata": NonNullable<Json>
                   }
@@ -25,6 +57,132 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"cohort_members": {
+                  Row: {
+                    "cohort_id": string,"created_at": string,"id": string,"status": string,"student_id": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "cohort_id": string,"created_at"?: string,"id"?: string,"status"?: string,"student_id": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "cohort_id"?: string,"created_at"?: string,"id"?: string,"status"?: string,"student_id"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "cohort_members_cohort_id_fkey"
+      columns: ["cohort_id"]
+isOneToOne: false
+      referencedRelation: "cohorts"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "cohort_members_student_id_fkey"
+      columns: ["student_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"cohorts": {
+                  Row: {
+                    "course_id": string,"created_at": string,"ends_on": string | null,"id": string,"name": string,"starts_on": string | null,"status": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "course_id": string,"created_at"?: string,"ends_on"?: string | null,"id"?: string,"name": string,"starts_on"?: string | null,"status"?: string,"updated_at"?: string
+                  }
+                  Update: {
+                    "course_id"?: string,"created_at"?: string,"ends_on"?: string | null,"id"?: string,"name"?: string,"starts_on"?: string | null,"status"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "cohorts_course_id_fkey"
+      columns: ["course_id"]
+isOneToOne: false
+      referencedRelation: "courses"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"courses": {
+                  Row: {
+                    "created_at": string,"description": string,"id": string,"slug": string,"status": Database["public"]['Enums']["content_status"],"title": string,"title_ar": string,"updated_at": string,"version": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"description"?: string,"id"?: string,"slug": string,"status"?: Database["public"]['Enums']["content_status"],"title": string,"title_ar"?: string,"updated_at"?: string,"version"?: number
+                  }
+                  Update: {
+                    "created_at"?: string,"description"?: string,"id"?: string,"slug"?: string,"status"?: Database["public"]['Enums']["content_status"],"title"?: string,"title_ar"?: string,"updated_at"?: string,"version"?: number
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"lesson_blocks": {
+                  Row: {
+                    "authoring_type": Database["public"]['Enums']["authoring_type"],"block_type": Database["public"]['Enums']["block_type"],"body": NonNullable<Json>,"created_at": string,"id": string,"lesson_id": string,"locale": string | null,"position": number,"source_reference_id": string | null,"title": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "authoring_type"?: Database["public"]['Enums']["authoring_type"],"block_type": Database["public"]['Enums']["block_type"],"body"?: NonNullable<Json>,"created_at"?: string,"id"?: string,"lesson_id": string,"locale"?: string | null,"position": number,"source_reference_id"?: string | null,"title"?: string,"updated_at"?: string
+                  }
+                  Update: {
+                    "authoring_type"?: Database["public"]['Enums']["authoring_type"],"block_type"?: Database["public"]['Enums']["block_type"],"body"?: NonNullable<Json>,"created_at"?: string,"id"?: string,"lesson_id"?: string,"locale"?: string | null,"position"?: number,"source_reference_id"?: string | null,"title"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "lesson_blocks_lesson_id_fkey"
+      columns: ["lesson_id"]
+isOneToOne: false
+      referencedRelation: "lessons"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "lesson_blocks_source_reference_id_fkey"
+      columns: ["source_reference_id"]
+isOneToOne: false
+      referencedRelation: "source_references"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"lessons": {
+                  Row: {
+                    "created_at": string,"estimated_minutes": number | null,"id": string,"module_id": string,"objectives": NonNullable<Json>,"position": number,"published_at": string | null,"source_audit_status": Database["public"]['Enums']["source_audit_status"],"status": Database["public"]['Enums']["content_status"],"title": string,"title_ar": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"estimated_minutes"?: number | null,"id"?: string,"module_id": string,"objectives"?: NonNullable<Json>,"position": number,"published_at"?: string | null,"source_audit_status"?: Database["public"]['Enums']["source_audit_status"],"status"?: Database["public"]['Enums']["content_status"],"title": string,"title_ar"?: string,"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"estimated_minutes"?: number | null,"id"?: string,"module_id"?: string,"objectives"?: NonNullable<Json>,"position"?: number,"published_at"?: string | null,"source_audit_status"?: Database["public"]['Enums']["source_audit_status"],"status"?: Database["public"]['Enums']["content_status"],"title"?: string,"title_ar"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "lessons_module_id_fkey"
+      columns: ["module_id"]
+isOneToOne: false
+      referencedRelation: "modules"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"modules": {
+                  Row: {
+                    "course_id": string,"created_at": string,"description": string,"id": string,"position": number,"status": Database["public"]['Enums']["content_status"],"title": string,"title_ar": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "course_id": string,"created_at"?: string,"description"?: string,"id"?: string,"position": number,"status"?: Database["public"]['Enums']["content_status"],"title": string,"title_ar"?: string,"updated_at"?: string
+                  }
+                  Update: {
+                    "course_id"?: string,"created_at"?: string,"description"?: string,"id"?: string,"position"?: number,"status"?: Database["public"]['Enums']["content_status"],"title"?: string,"title_ar"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "modules_course_id_fkey"
+      columns: ["course_id"]
+isOneToOne: false
+      referencedRelation: "courses"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"profiles": {
                   Row: {
                     "created_at": string,"display_name": string,"email": string,"id": string,"locale": string,"status": string,"updated_at": string
@@ -39,19 +197,85 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
-                },"teacher_assignments": {
+                },"quiz_answer_keys": {
                   Row: {
-                    "active": boolean,"created_at": string,"created_by": string | null,"id": string,"student_id": string,"teacher_id": string,"updated_at": string
+                    "correct_options": NonNullable<Json>,"question_id": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "active"?: boolean,"created_at"?: string,"created_by"?: string | null,"id"?: string,"student_id": string,"teacher_id": string,"updated_at"?: string
+                    "correct_options": NonNullable<Json>,"question_id": string,"updated_at"?: string
                   }
                   Update: {
-                    "active"?: boolean,"created_at"?: string,"created_by"?: string | null,"id"?: string,"student_id"?: string,"teacher_id"?: string,"updated_at"?: string
+                    "correct_options"?: NonNullable<Json>,"question_id"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
+      foreignKeyName: "quiz_answer_keys_question_id_fkey"
+      columns: ["question_id"]
+isOneToOne: true
+      referencedRelation: "quiz_questions"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"quiz_questions": {
+                  Row: {
+                    "assignment_id": string,"created_at": string,"id": string,"options": NonNullable<Json>,"points": number,"position": number,"prompt": string,"type": Database["public"]['Enums']["question_type"],"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "assignment_id": string,"created_at"?: string,"id"?: string,"options": NonNullable<Json>,"points"?: number,"position": number,"prompt": string,"type"?: Database["public"]['Enums']["question_type"],"updated_at"?: string
+                  }
+                  Update: {
+                    "assignment_id"?: string,"created_at"?: string,"id"?: string,"options"?: NonNullable<Json>,"points"?: number,"position"?: number,"prompt"?: string,"type"?: Database["public"]['Enums']["question_type"],"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "quiz_questions_assignment_id_fkey"
+      columns: ["assignment_id"]
+isOneToOne: false
+      referencedRelation: "assignments"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"source_references": {
+                  Row: {
+                    "author": string,"created_at": string,"created_by": string | null,"edition": string,"id": string,"notes": string,"page_or_section": string,"rights_status": Database["public"]['Enums']["rights_status"],"title": string,"updated_at": string,"verification_status": Database["public"]['Enums']["verification_status"]
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "author"?: string,"created_at"?: string,"created_by"?: string | null,"edition"?: string,"id"?: string,"notes"?: string,"page_or_section"?: string,"rights_status"?: Database["public"]['Enums']["rights_status"],"title": string,"updated_at"?: string,"verification_status"?: Database["public"]['Enums']["verification_status"]
+                  }
+                  Update: {
+                    "author"?: string,"created_at"?: string,"created_by"?: string | null,"edition"?: string,"id"?: string,"notes"?: string,"page_or_section"?: string,"rights_status"?: Database["public"]['Enums']["rights_status"],"title"?: string,"updated_at"?: string,"verification_status"?: Database["public"]['Enums']["verification_status"]
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "source_references_created_by_fkey"
+      columns: ["created_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"teacher_assignments": {
+                  Row: {
+                    "active": boolean,"cohort_id": string | null,"created_at": string,"created_by": string | null,"id": string,"student_id": string | null,"teacher_id": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "active"?: boolean,"cohort_id"?: string | null,"created_at"?: string,"created_by"?: string | null,"id"?: string,"student_id"?: string | null,"teacher_id": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "active"?: boolean,"cohort_id"?: string | null,"created_at"?: string,"created_by"?: string | null,"id"?: string,"student_id"?: string | null,"teacher_id"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "teacher_assignments_cohort_id_fkey"
+      columns: ["cohort_id"]
+isOneToOne: false
+      referencedRelation: "cohorts"
+      referencedColumns: ["id"]
+    },{
       foreignKeyName: "teacher_assignments_created_by_fkey"
       columns: ["created_by"]
 isOneToOne: false
@@ -106,7 +330,7 @@ isOneToOne: false
             [_ in never]: never
           }
           Enums: {
-            "app_role": "student"|"teacher"|"admin"
+            "app_role": "student"|"teacher"|"admin","assignment_type": "quiz"|"audio"|"written","authoring_type": "source"|"authored","block_type": "text"|"arabic"|"table"|"makhraj"|"sifat"|"mastery","content_status": "draft"|"published"|"archived","question_type": "single_choice"|"multiple_choice","rights_status": "unknown"|"permitted"|"restricted"|"own","source_audit_status": "pending"|"in_review"|"verified"|"not_required","verification_status": "pending"|"verified"|"rejected"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -222,7 +446,7 @@ export type CompositeTypes<
 export const Constants = {
   "public": {
           Enums: {
-            "app_role": ["student", "teacher", "admin"]
+            "app_role": ["student", "teacher", "admin"],"assignment_type": ["quiz", "audio", "written"],"authoring_type": ["source", "authored"],"block_type": ["text", "arabic", "table", "makhraj", "sifat", "mastery"],"content_status": ["draft", "published", "archived"],"question_type": ["single_choice", "multiple_choice"],"rights_status": ["unknown", "permitted", "restricted", "own"],"source_audit_status": ["pending", "in_review", "verified", "not_required"],"verification_status": ["pending", "verified", "rejected"]
           }
         }
 } as const

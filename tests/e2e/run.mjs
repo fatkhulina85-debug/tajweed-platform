@@ -30,6 +30,7 @@ try {
   }
   execSync("node tests/e2e/auth.mjs", { env, stdio: "inherit" });
   execSync("node tests/e2e/login.mjs", { env, stdio: "inherit" });
+  execSync("node tests/e2e/content.mjs", { env, stdio: "inherit" });
   code = 0;
 } catch {
   code = 1;

@@ -1,24 +1,14 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { getCurrentUser } from "@/lib/auth/session";
+import { refresh } from "next/cache";
+import { requireAdmin } from "./guard";
 import { roles, type Role } from "@/lib/auth/routes";
 import { formLocale, isEmail, text, type FormState } from "@/lib/auth/validation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
-// Every action re-checks the caller: Server Actions are public endpoints.
-async function requireAdmin() {
-  const user = await getCurrentUser();
-  return user?.roles.includes("admin") ? user : null;
-}
-
 function parseRole(value: string): Role | null {
   return roles.includes(value as Role) ? (value as Role) : null;
-}
-
-function refresh(formData: FormData) {
-  revalidatePath(`/${formLocale(formData)}/admin/users`);
 }
 
 export async function inviteUser(_prev: FormState, formData: FormData): Promise<FormState> {
@@ -46,7 +36,7 @@ export async function inviteUser(_prev: FormState, formData: FormData): Promise<
     .insert({ user_id: data.user.id, role, created_by: admin.id });
   if (roleError) return { error: "unknown" };
 
-  refresh(formData);
+  refresh();
   return { ok: true };
 }
 
@@ -62,7 +52,7 @@ export async function setRole(formData: FormData) {
   } else {
     await supabase.from("user_roles").delete().eq("user_id", userId).eq("role", role);
   }
-  refresh(formData);
+  refresh();
 }
 
 export async function setBlocked(formData: FormData) {
@@ -75,7 +65,7 @@ export async function setBlocked(formData: FormData) {
     .from("profiles")
     .update({ status: text(formData, "blocked") === "1" ? "blocked" : "active" })
     .eq("id", userId);
-  refresh(formData);
+  refresh();
 }
 
 export async function assignTeacher(formData: FormData) {
@@ -107,5 +97,5 @@ export async function assignTeacher(formData: FormData) {
         .insert({ teacher_id: teacherId, student_id: studentId, created_by: admin.id });
     }
   }
-  refresh(formData);
+  refresh();
 }

@@ -9,6 +9,9 @@ export type FormError =
   | "session_expired"
   | "already_exists"
   | "not_allowed"
+  | "duplicate"
+  | "invalid_input"
+  | "not_audited"
   | "unknown";
 
 export type FormState = { error?: FormError; ok?: boolean } | undefined;

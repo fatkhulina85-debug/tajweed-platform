@@ -10,7 +10,7 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "check": "npm run lint && npm run typecheck && npm test && npm run build",
-    "db:types": "supabase gen types typescript --local --schema public > src/lib/supabase/database.types.ts",
+    "db:types": "supabase gen types typescript --db-url postgresql://postgres:postgres@127.0.0.1:54322/postgres --schema public > src/lib/supabase/database.types.ts",
     "test:db": "supabase test db",
     "test:e2e": "node tests/e2e/run.mjs"
   },

@@ -64,6 +64,15 @@ Every route starts with a locale: `/ru/...` or `/ar/...`. `src/proxy.ts` redirec
 - Use logical Tailwind classes (`ms-`, `pe-`, `start-`, `text-start`) instead of `ml-`/`right-` so layouts mirror correctly in Arabic.
 - Wrap Arabic text inside the Russian interface in an element with `class="arabic" lang="ar" dir="rtl"`.
 
+## Course content
+
+- Structure: course → module → lesson → blocks, plus assignments (quizzes) per lesson. Edited at `/[lang]/admin/courses` and `/[lang]/admin/content/[lessonId]`, previewed at `…/preview`.
+- A student sees a lesson only when the lesson, its module and its course are published **and** the student is an active member of a cohort of that course. Teachers see all published content; admins see drafts.
+- A lesson cannot be published while `source_audit_status` is `pending` or `in_review` (database CHECK). Material based on the workbooks stays unpublished until the page-by-page audit and the rights question are settled.
+- Blocks marked "from source" must cite an entry of the source registry (`/[lang]/admin/sources`).
+- Quiz answer keys are stored in `quiz_answer_keys`, readable only by admins.
+- Publishing and unpublishing are written to `audit_logs`.
+
 ## Structure
 
 ```
@@ -73,14 +82,15 @@ src/
   components/          shared UI (cabinet shell, header, forms)
   i18n/                locales, negotiation, dictionaries
   lib/auth/            session and roles (DAL), auth Server Actions
-  lib/admin/           admin Server Actions (invite, roles, blocking)
+  lib/admin/           admin Server Actions (invite, roles, blocking), admin guard
+  lib/content/         course content: queries, admin Server Actions, block bodies
   lib/supabase/        Supabase clients: server, proxy, admin (server only)
   proxy.ts             locale redirect, session refresh
 supabase/
   migrations/          schema, RLS policies, triggers
   tests/database/      pgTAP access tests
   templates/           invite and recovery emails
-tests/e2e/             end-to-end auth checks
+tests/e2e/             end-to-end checks: auth, login forms, course content
 ```
 
 ## Security rules
@@ -94,8 +104,8 @@ tests/e2e/             end-to-end auth checks
 
 0. Audit ✅
 1. Scaffold: routes, RU/AR, RTL, design tokens ✅
-2. Auth and roles, RLS ✅ (locally; applying to the real project needs CLI access)
-3. Course model: migrations, admin publishes a lesson
+2. Auth and roles, RLS ✅ (applied to the real project; invite emails need SMTP)
+3. Course model: migrations, admin publishes a lesson ✅ (locally; the migration is not yet applied to the real project)
 4. Student cabinet: lesson, quiz, progress
 5. Audio and review: private storage, teacher queue, feedback
 6. Live sessions
