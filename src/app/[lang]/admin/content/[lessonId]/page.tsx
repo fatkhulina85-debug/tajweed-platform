@@ -20,6 +20,9 @@ import {
   updateLesson,
 } from "@/lib/content/actions";
 import { blockTypes, formatTable, localized, readBody } from "@/lib/content/blocks";
+import { AudioPlayer } from "@/components/pronunciation/audio-player";
+import { ReferenceUpload } from "@/components/pronunciation/reference-upload";
+import { updateExercise } from "@/lib/pronunciation/actions";
 import { getAnswerKeys, getLesson, listSources } from "@/lib/content/queries";
 
 export default async function LessonEditorPage({ params }: PageProps<"/[lang]/admin/content/[lessonId]">) {
@@ -157,6 +160,53 @@ async function Editor({ lessonId: lessonIdPromise }: { lessonId: Promise<string>
                   </span>
                 </div>
                 {assignment.instructions && <p className="text-sm text-muted">{assignment.instructions}</p>}
+                {assignment.type === "audio" && (
+                  <div className="space-y-4 border-t border-line pt-3">
+                    <h4 className="font-medium">{dict.pronunciation.exerciseSettings}</h4>
+                    <ActionForm
+                      action={updateExercise}
+                      submitLabel={t.save}
+                      pendingLabel={dict.auth.pending}
+                      successText={t.saved}
+                      errors={dict.errors}
+                    >
+                      <HiddenLocale locale={locale} />
+                      <input type="hidden" name="id" value={assignment.id} />
+                      <TextArea
+                        label={dict.pronunciation.targetText}
+                        name="target_text"
+                        rows={2}
+                        dir="rtl"
+                        required
+                        defaultValue={assignment.target_text}
+                      />
+                      <TextArea label={t.instructions} name="instructions" rows={2} defaultValue={assignment.instructions} />
+                    </ActionForm>
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">{dict.pronunciation.referenceUpload}</p>
+                      {assignment.reference_audio_path ? (
+                        <AudioPlayer
+                          query={`reference=${assignment.id}`}
+                          label={dict.pronunciation.playReference}
+                          labels={{ loading: dict.pronunciation.loadingAudio, error: dict.pronunciation.audioError }}
+                        />
+                      ) : (
+                        <p className="text-sm text-amber-900">{dict.pronunciation.noReference}</p>
+                      )}
+                      <ReferenceUpload
+                        assignmentId={assignment.id}
+                        labels={{
+                          field: dict.pronunciation.referenceUpload,
+                          upload: dict.pronunciation.uploadReference,
+                          uploading: dict.pronunciation.uploading,
+                          done: dict.pronunciation.referenceUploaded,
+                          failed: dict.pronunciation.referenceFailed,
+                          hint: dict.pronunciation.referenceHint,
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
                 {assignment.type === "quiz" && (
                   <>
                     <ol className="list-decimal space-y-2 ps-5 text-sm">

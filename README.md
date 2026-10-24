@@ -73,6 +73,16 @@ Every route starts with a locale: `/ru/...` or `/ar/...`. `src/proxy.ts` redirec
 - Quiz answer keys are stored in `quiz_answer_keys`, readable only by admins.
 - Publishing and unpublishing are written to `audit_logs`.
 
+## Pronunciation trainer
+
+- An exercise is an assignment of type **Аудиозапись** in a lesson. In the lesson editor an admin sets the Arabic text to pronounce and uploads a **real** reference recording (private bucket `reference-audio`, up to 5 MB). Until then the student sees "Эталонная запись пока не добавлена".
+- Students open the trainer from the lesson (`/[lang]/student/exercises/[assignmentId]`), record with `MediaRecorder` (up to 30 s, 2 MB), listen back, re-record, and press "Отправить учителю". Every attempt is kept.
+- Upload: `POST /api/pronunciation/attempts`. The attempt id is created in the browser, so a retried request finishes the same attempt instead of adding one. Files go to the private bucket `submissions` under `<student>/<exercise>/<attempt>.<ext>`.
+- Listening: `GET /api/pronunciation/audio` returns a signed URL valid for 5 minutes. Access is decided by the database row (owner, the student's teacher, admin), never by the path.
+- Teachers review at `/[lang]/teacher/dashboard` (queue with filters) and `/[lang]/teacher/submissions/[id]`: verdict "Верно" / "Нужно исправить" / "Нужна повторная попытка", optional error type and a comment. The student sees the result in the trainer.
+- No automatic scoring. `automated_assessments` is reserved for a future analyser, kept apart from teacher reviews.
+- Browser tests (`tests/browser`, Playwright with a fake microphone) run as part of `npm run test:e2e`. Install the browser once: `npx playwright install chromium`.
+
 ## Structure
 
 ```

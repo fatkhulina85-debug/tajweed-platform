@@ -57,7 +57,8 @@ export async function getLesson(lessonId: string) {
       modules (id, title, title_ar, status, course_id, courses (id, title, title_ar, status)),
       lesson_blocks (id, position, block_type, title, body, locale, authoring_type, source_reference_id,
         source_references (id, title, author, edition, page_or_section, verification_status)),
-      assignments (id, title, instructions, type, status, quiz_questions (id, position, prompt, options, points))
+      assignments (id, title, instructions, type, status, target_text, reference_audio_path,
+        quiz_questions (id, position, prompt, options, points))
     `)
     .eq("id", lessonId)
     .order("position", { referencedTable: "lesson_blocks" })

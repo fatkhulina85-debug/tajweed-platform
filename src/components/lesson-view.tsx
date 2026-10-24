@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Dictionary } from "@/i18n/dictionaries";
 import type { Locale } from "@/i18n/config";
 import { localized, paragraphs, readBody, type BlockType } from "@/lib/content/blocks";
@@ -13,16 +14,20 @@ export function LessonView({
   locale,
   dict,
   answerKeys,
+  exerciseHref,
 }: {
   lesson: Lesson;
   locale: Locale;
   dict: Dictionary;
   /** Present only in the admin preview. */
   answerKeys?: Map<string, number[]>;
+  /** Link to the pronunciation trainer; absent in the admin preview. */
+  exerciseHref?: (assignmentId: string) => string;
 }) {
   const objectives = Array.isArray(lesson.objectives) ? (lesson.objectives as string[]) : [];
   const blocks = lesson.lesson_blocks.filter((block) => !block.locale || block.locale === locale);
   const quizzes = lesson.assignments.filter((a) => a.type === "quiz" && a.quiz_questions.length > 0);
+  const exercises = lesson.assignments.filter((a) => a.type === "audio");
   const parent = lesson.modules;
 
   return (
@@ -126,6 +131,25 @@ export function LessonView({
           </section>
         );
       })}
+
+      {exercises.map((exercise) => (
+        <section key={exercise.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-surface p-5">
+          <div className="space-y-1">
+            <p className="text-sm text-muted">{dict.pronunciation.exerciseLabel}</p>
+            <h2 className="text-lg font-semibold">{exercise.title}</h2>
+          </div>
+          {exerciseHref ? (
+            <Link
+              href={exerciseHref(exercise.id)}
+              className="rounded-full bg-primary px-5 py-2.5 font-medium text-white hover:bg-primary-strong"
+            >
+              {dict.pronunciation.openExercise}
+            </Link>
+          ) : (
+            <p className="text-sm text-muted">{dict.pronunciation.studentLink}</p>
+          )}
+        </section>
+      ))}
 
       {quizzes.map((quiz) => (
         <section key={quiz.id} className="space-y-4 rounded-xl border border-line bg-surface p-5">

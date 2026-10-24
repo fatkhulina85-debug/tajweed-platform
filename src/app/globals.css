@@ -34,12 +34,15 @@ body {
 
 /*
  * Arabic text inside any interface (lesson content, letters, ayat):
- * larger size and line height so harakat do not collide.
+ * larger size and line height so harakat do not collide. In the components
+ * layer so size utilities (text-6xl etc.) can override it.
  */
-.arabic {
-  font-family: var(--font-arabic);
-  font-size: 1.375em;
-  line-height: 2;
+@layer components {
+  .arabic {
+    font-family: var(--font-arabic);
+    font-size: 1.375em;
+    line-height: 2;
+  }
 }
 
 :focus-visible {

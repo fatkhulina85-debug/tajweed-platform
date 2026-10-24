@@ -30,7 +30,12 @@ async function Lesson({ lessonId: lessonIdPromise }: { lessonId: Promise<string>
         ← {dict.pages.studentCourse.title}
       </Link>
       {lesson ? (
-        <LessonView lesson={lesson} locale={locale} dict={dict} />
+        <LessonView
+          lesson={lesson}
+          locale={locale}
+          dict={dict}
+          exerciseHref={(id) => `/${locale}/student/exercises/${id}`}
+        />
       ) : (
         <p className="text-muted">{dict.content.notFound}</p>
       )}

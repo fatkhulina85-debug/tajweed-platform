@@ -7,14 +7,14 @@ export type Database = {
           Tables: {
             "assignments": {
                   Row: {
-                    "created_at": string,"created_by": string | null,"id": string,"instructions": string,"lesson_id": string | null,"module_id": string | null,"rubric": NonNullable<Json>,"status": Database["public"]['Enums']["content_status"],"title": string,"type": Database["public"]['Enums']["assignment_type"],"updated_at": string
+                    "created_at": string,"created_by": string | null,"id": string,"instructions": string,"lesson_id": string | null,"module_id": string | null,"reference_audio_path": string | null,"rubric": NonNullable<Json>,"status": Database["public"]['Enums']["content_status"],"target_text": string,"title": string,"type": Database["public"]['Enums']["assignment_type"],"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"created_by"?: string | null,"id"?: string,"instructions"?: string,"lesson_id"?: string | null,"module_id"?: string | null,"rubric"?: NonNullable<Json>,"status"?: Database["public"]['Enums']["content_status"],"title": string,"type": Database["public"]['Enums']["assignment_type"],"updated_at"?: string
+                    "created_at"?: string,"created_by"?: string | null,"id"?: string,"instructions"?: string,"lesson_id"?: string | null,"module_id"?: string | null,"reference_audio_path"?: string | null,"rubric"?: NonNullable<Json>,"status"?: Database["public"]['Enums']["content_status"],"target_text"?: string,"title": string,"type": Database["public"]['Enums']["assignment_type"],"updated_at"?: string
                   }
                   Update: {
-                    "created_at"?: string,"created_by"?: string | null,"id"?: string,"instructions"?: string,"lesson_id"?: string | null,"module_id"?: string | null,"rubric"?: NonNullable<Json>,"status"?: Database["public"]['Enums']["content_status"],"title"?: string,"type"?: Database["public"]['Enums']["assignment_type"],"updated_at"?: string
+                    "created_at"?: string,"created_by"?: string | null,"id"?: string,"instructions"?: string,"lesson_id"?: string | null,"module_id"?: string | null,"reference_audio_path"?: string | null,"rubric"?: NonNullable<Json>,"status"?: Database["public"]['Enums']["content_status"],"target_text"?: string,"title"?: string,"type"?: Database["public"]['Enums']["assignment_type"],"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -54,6 +54,26 @@ isOneToOne: false
       columns: ["actor_user_id"]
 isOneToOne: false
       referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"automated_assessments": {
+                  Row: {
+                    "confidence": number | null,"created_at": string,"id": string,"provider": string,"result": NonNullable<Json>,"status": Database["public"]['Enums']["assessment_status"],"submission_id": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "confidence"?: number | null,"created_at"?: string,"id"?: string,"provider": string,"result"?: NonNullable<Json>,"status"?: Database["public"]['Enums']["assessment_status"],"submission_id": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "confidence"?: number | null,"created_at"?: string,"id"?: string,"provider"?: string,"result"?: NonNullable<Json>,"status"?: Database["public"]['Enums']["assessment_status"],"submission_id"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "automated_assessments_submission_id_fkey"
+      columns: ["submission_id"]
+isOneToOne: false
+      referencedRelation: "submissions"
       referencedColumns: ["id"]
     }
                   ]
@@ -237,6 +257,32 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"reviews": {
+                  Row: {
+                    "created_at": string,"error_type": string | null,"feedback_text": string,"id": string,"reviewed_at": string,"reviewer_id": string,"submission_id": string,"updated_at": string,"verdict": Database["public"]['Enums']["review_verdict"]
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"error_type"?: string | null,"feedback_text"?: string,"id"?: string,"reviewed_at"?: string,"reviewer_id": string,"submission_id": string,"updated_at"?: string,"verdict": Database["public"]['Enums']["review_verdict"]
+                  }
+                  Update: {
+                    "created_at"?: string,"error_type"?: string | null,"feedback_text"?: string,"id"?: string,"reviewed_at"?: string,"reviewer_id"?: string,"submission_id"?: string,"updated_at"?: string,"verdict"?: Database["public"]['Enums']["review_verdict"]
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "reviews_reviewer_id_fkey"
+      columns: ["reviewer_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "reviews_submission_id_fkey"
+      columns: ["submission_id"]
+isOneToOne: true
+      referencedRelation: "submissions"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"source_references": {
                   Row: {
                     "author": string,"created_at": string,"created_by": string | null,"edition": string,"id": string,"notes": string,"page_or_section": string,"rights_status": Database["public"]['Enums']["rights_status"],"title": string,"updated_at": string,"verification_status": Database["public"]['Enums']["verification_status"]
@@ -252,6 +298,32 @@ isOneToOne: false
                     {
       foreignKeyName: "source_references_created_by_fkey"
       columns: ["created_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"submissions": {
+                  Row: {
+                    "assignment_id": string,"attempt_number": number,"audio_path": string | null,"created_at": string,"duration_ms": number | null,"id": string,"mime_type": string | null,"size_bytes": number | null,"status": Database["public"]['Enums']["submission_status"],"student_id": string,"submitted_at": string | null,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "assignment_id": string,"attempt_number": number,"audio_path"?: string | null,"created_at"?: string,"duration_ms"?: number | null,"id": string,"mime_type"?: string | null,"size_bytes"?: number | null,"status"?: Database["public"]['Enums']["submission_status"],"student_id": string,"submitted_at"?: string | null,"updated_at"?: string
+                  }
+                  Update: {
+                    "assignment_id"?: string,"attempt_number"?: number,"audio_path"?: string | null,"created_at"?: string,"duration_ms"?: number | null,"id"?: string,"mime_type"?: string | null,"size_bytes"?: number | null,"status"?: Database["public"]['Enums']["submission_status"],"student_id"?: string,"submitted_at"?: string | null,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "submissions_assignment_id_fkey"
+      columns: ["assignment_id"]
+isOneToOne: false
+      referencedRelation: "assignments"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "submissions_student_id_fkey"
+      columns: ["student_id"]
 isOneToOne: false
       referencedRelation: "profiles"
       referencedColumns: ["id"]
@@ -330,7 +402,7 @@ isOneToOne: false
             [_ in never]: never
           }
           Enums: {
-            "app_role": "student"|"teacher"|"admin","assignment_type": "quiz"|"audio"|"written","authoring_type": "source"|"authored","block_type": "text"|"arabic"|"table"|"makhraj"|"sifat"|"mastery","content_status": "draft"|"published"|"archived","question_type": "single_choice"|"multiple_choice","rights_status": "unknown"|"permitted"|"restricted"|"own","source_audit_status": "pending"|"in_review"|"verified"|"not_required","verification_status": "pending"|"verified"|"rejected"
+            "app_role": "student"|"teacher"|"admin","assessment_status": "pending"|"processed"|"low_confidence"|"failed","assignment_type": "quiz"|"audio"|"written","authoring_type": "source"|"authored","block_type": "text"|"arabic"|"table"|"makhraj"|"sifat"|"mastery","content_status": "draft"|"published"|"archived","question_type": "single_choice"|"multiple_choice","review_verdict": "correct"|"needs_fix"|"retry","rights_status": "unknown"|"permitted"|"restricted"|"own","source_audit_status": "pending"|"in_review"|"verified"|"not_required","submission_status": "pending_upload"|"needs_teacher_review"|"reviewed"|"processing_failed","verification_status": "pending"|"verified"|"rejected"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -446,7 +518,7 @@ export type CompositeTypes<
 export const Constants = {
   "public": {
           Enums: {
-            "app_role": ["student", "teacher", "admin"],"assignment_type": ["quiz", "audio", "written"],"authoring_type": ["source", "authored"],"block_type": ["text", "arabic", "table", "makhraj", "sifat", "mastery"],"content_status": ["draft", "published", "archived"],"question_type": ["single_choice", "multiple_choice"],"rights_status": ["unknown", "permitted", "restricted", "own"],"source_audit_status": ["pending", "in_review", "verified", "not_required"],"verification_status": ["pending", "verified", "rejected"]
+            "app_role": ["student", "teacher", "admin"],"assessment_status": ["pending", "processed", "low_confidence", "failed"],"assignment_type": ["quiz", "audio", "written"],"authoring_type": ["source", "authored"],"block_type": ["text", "arabic", "table", "makhraj", "sifat", "mastery"],"content_status": ["draft", "published", "archived"],"question_type": ["single_choice", "multiple_choice"],"review_verdict": ["correct", "needs_fix", "retry"],"rights_status": ["unknown", "permitted", "restricted", "own"],"source_audit_status": ["pending", "in_review", "verified", "not_required"],"submission_status": ["pending_upload", "needs_teacher_review", "reviewed", "processing_failed"],"verification_status": ["pending", "verified", "rejected"]
           }
         }
 } as const
