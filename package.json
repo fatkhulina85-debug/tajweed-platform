@@ -12,7 +12,8 @@
     "check": "npm run lint && npm run typecheck && npm test && npm run build",
     "db:types": "supabase gen types typescript --db-url postgresql://postgres:postgres@127.0.0.1:54322/postgres --schema public > src/lib/supabase/database.types.ts",
     "test:db": "supabase test db",
-    "test:e2e": "node tests/e2e/run.mjs"
+    "test:e2e": "node tests/e2e/run.mjs",
+    "content:import": "node scripts/import-course.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",
